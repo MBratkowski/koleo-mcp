@@ -2,3 +2,4 @@ mcp[cli]>=1.0
 koleo-cli
 aiohttp
 orjson
+certifi
