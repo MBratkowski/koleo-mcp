@@ -17,7 +17,7 @@ dependencies = [
 koleo-mcp = "server:main"
 
 [tool.setuptools]
-py-modules = ["server", "config"]
+py-modules = ["server", "config", "client", "errors"]
 
 [tool.setuptools.packages.find]
 where = ["."]
