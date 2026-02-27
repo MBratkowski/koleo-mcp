@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "koleo-mcp"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "mcp[cli]>=1.0",
+    "koleo-cli",
+    "aiohttp",
+    "orjson",
+]
+
+[project.scripts]
+koleo-mcp = "server:main"
+
+[tool.setuptools]
+py-modules = ["server", "config", "client", "errors"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["tools*", "formatters*"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
