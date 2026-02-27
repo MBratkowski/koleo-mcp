@@ -3,6 +3,7 @@ import json
 from mcp.server.fastmcp import FastMCP
 
 from tools.board import get_all_trains, get_arrivals, get_departures
+from tools.connections import search_connections
 from tools.stations import get_station_info, search_stations
 
 mcp = FastMCP("koleo")
@@ -60,6 +61,32 @@ async def tool_get_all_trains(station: str, date: str | None = None) -> str:
         date: ISO datetime. Defaults to now.
     """
     return json.dumps(await get_all_trains(station, date), ensure_ascii=False)
+
+
+@mcp.tool(description="Search for train connections between two stations.")
+async def tool_search_connections(
+    start: str,
+    end: str,
+    date: str | None = None,
+    brands: list[str] | None = None,
+    direct: bool = False,
+    include_prices: bool = False,
+    length: int = 5,
+) -> str:
+    """
+    Args:
+        start: Starting station name (e.g. 'Krakow') or slug
+        end: Destination station name or slug
+        date: ISO datetime for departure after. Defaults to now.
+        brands: Optional list of brand codes to filter (e.g. ['IC', 'REG'])
+        direct: If True, only return direct trains (no changes)
+        include_prices: If True, fetch prices for each connection
+        length: Maximum number of connections to return (default 5)
+    """
+    return json.dumps(
+        await search_connections(start, end, date, brands, direct, include_prices, length),
+        ensure_ascii=False,
+    )
 
 
 def main():
