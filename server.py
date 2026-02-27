@@ -4,6 +4,7 @@ from mcp.server.fastmcp import FastMCP
 
 from tools.board import get_all_trains, get_arrivals, get_departures
 from tools.connections import search_connections
+from tools.realtime import get_realtime_timetable
 from tools.seats import get_brands, get_carriers, get_seat_availability, get_seat_stats
 from tools.stations import get_station_info, search_stations
 from tools.trains import get_train_by_id, get_train_calendar, get_train_route
@@ -163,6 +164,16 @@ async def tool_get_brands() -> str:
 @mcp.tool(description="List all train carriers (PKP Intercity, POLREGIO, etc.).")
 async def tool_get_carriers() -> str:
     return json.dumps(await get_carriers(), ensure_ascii=False)
+
+
+@mcp.tool(description="Get realtime timetable for a train, including actual vs scheduled times. Requires authentication in config.")
+async def tool_get_realtime_timetable(train_id: int, operating_day: str | None = None) -> str:
+    """
+    Args:
+        train_id: Koleo internal train ID (integer)
+        operating_day: ISO date (e.g. '2026-02-27'). Defaults to today.
+    """
+    return json.dumps(await get_realtime_timetable(train_id, operating_day), ensure_ascii=False)
 
 
 def main():
