@@ -4,6 +4,7 @@ from mcp.server.fastmcp import FastMCP
 
 from tools.board import get_all_trains, get_arrivals, get_departures
 from tools.connections import search_connections
+from tools.seats import get_brands, get_carriers, get_seat_availability, get_seat_stats
 from tools.stations import get_station_info, search_stations
 from tools.trains import get_train_by_id, get_train_calendar, get_train_route
 
@@ -124,6 +125,44 @@ async def tool_get_train_calendar(brand: str, train_number: str) -> str:
         train_number: Train number as string
     """
     return json.dumps(await get_train_calendar(brand, train_number), ensure_ascii=False)
+
+
+@mcp.tool(description="Check seat occupancy statistics for a train on a given route segment.")
+async def tool_get_seat_stats(
+    brand: str,
+    train_number: str,
+    stations: list[str],
+    date: str | None = None,
+) -> str:
+    """
+    Args:
+        brand: Brand code (e.g. 'IC', 'REG')
+        train_number: Train number as string
+        stations: List of exactly 2 stations: [start_station, end_station]
+        date: ISO datetime. Defaults to now.
+    """
+    return json.dumps(await get_seat_stats(brand, train_number, date, stations), ensure_ascii=False)
+
+
+@mcp.tool(description="Get raw seat availability for a connection by connection_id, train_nr, and place_type.")
+async def tool_get_seat_availability(connection_id: int, train_nr: int, place_type: int) -> str:
+    """
+    Args:
+        connection_id: Koleo connection ID (integer)
+        train_nr: Train number (integer)
+        place_type: Seat/place type ID (integer, e.g. 1 for standard)
+    """
+    return json.dumps(await get_seat_availability(connection_id, train_nr, place_type), ensure_ascii=False)
+
+
+@mcp.tool(description="List all available train brands/operators (IC, REG, EIC, KM, etc.).")
+async def tool_get_brands() -> str:
+    return json.dumps(await get_brands(), ensure_ascii=False)
+
+
+@mcp.tool(description="List all train carriers (PKP Intercity, POLREGIO, etc.).")
+async def tool_get_carriers() -> str:
+    return json.dumps(await get_carriers(), ensure_ascii=False)
 
 
 def main():
