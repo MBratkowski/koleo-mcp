@@ -5,6 +5,7 @@ from mcp.server.fastmcp import FastMCP
 from tools.board import get_all_trains, get_arrivals, get_departures
 from tools.connections import search_connections
 from tools.stations import get_station_info, search_stations
+from tools.trains import get_train_by_id, get_train_calendar, get_train_route
 
 mcp = FastMCP("koleo")
 
@@ -87,6 +88,42 @@ async def tool_search_connections(
         await search_connections(start, end, date, brands, direct, include_prices, length),
         ensure_ascii=False,
     )
+
+
+@mcp.tool(description="Get the full route and stop schedule for a train by brand and number.")
+async def tool_get_train_route(
+    brand: str,
+    train_number: str,
+    date: str | None = None,
+    closest: bool = False,
+) -> str:
+    """
+    Args:
+        brand: Brand code (e.g. 'IC', 'REG', 'EIC', 'KM')
+        train_number: Train number as string (e.g. '1106', '10417')
+        date: ISO date/datetime. Defaults to today.
+        closest: If True, find the closest running date if train does not run on given date.
+    """
+    return json.dumps(await get_train_route(brand, train_number, date, closest), ensure_ascii=False)
+
+
+@mcp.tool(description="Get a train's route and stops by its internal Koleo ID.")
+async def tool_get_train_by_id(train_id: int) -> str:
+    """
+    Args:
+        train_id: Koleo internal train ID (integer)
+    """
+    return json.dumps(await get_train_by_id(train_id), ensure_ascii=False)
+
+
+@mcp.tool(description="Get all dates when a specific train runs (operating calendar).")
+async def tool_get_train_calendar(brand: str, train_number: str) -> str:
+    """
+    Args:
+        brand: Brand code (e.g. 'IC', 'REG')
+        train_number: Train number as string
+    """
+    return json.dumps(await get_train_calendar(brand, train_number), ensure_ascii=False)
 
 
 def main():
