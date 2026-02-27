@@ -11,6 +11,7 @@ dependencies = [
     "koleo-cli",
     "aiohttp",
     "orjson",
+    "certifi",
 ]
 
 [project.scripts]

@@ -1,4 +1,9 @@
 import json
+import os
+
+import certifi
+
+os.environ.setdefault("SSL_CERT_FILE", certifi.where())
 
 from mcp.server.fastmcp import FastMCP
 
